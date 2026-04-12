@@ -57,12 +57,14 @@ export default function Navbar() {
           >
             <i className="ri-whatsapp-line text-base"></i>
           </a>
-          <button
-            onClick={() => scrollTo("booking")}
+          <a
+            href="https://app.abremponghostel.com/book"
+            target="_blank"
+            rel="noopener noreferrer"
             className="px-5 py-2 border border-[#C8A96A] text-[#C8A96A] text-xs uppercase tracking-widest rounded-full hover:bg-[#C8A96A] hover:text-black transition-all duration-300 cursor-pointer whitespace-nowrap"
           >
             Book Now
-          </button>
+          </a>
         </div>
 
         {/* Mobile Hamburger */}
@@ -86,12 +88,14 @@ export default function Navbar() {
               {item}
             </button>
           ))}
-          <button
-            onClick={() => scrollTo("booking")}
-            className="mt-2 px-5 py-3 bg-[#C8A96A] text-black text-xs uppercase tracking-widest rounded-full font-semibold cursor-pointer whitespace-nowrap"
+          <a
+            href="https://app.abremponghostel.com/book"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 px-5 py-3 bg-[#C8A96A] text-black text-xs uppercase tracking-widest rounded-full font-semibold cursor-pointer whitespace-nowrap text-center"
           >
             Book Now
-          </button>
+          </a>
         </div>
       )}
     </nav>

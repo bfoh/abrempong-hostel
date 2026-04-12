@@ -46,11 +46,6 @@ export default function Rooms() {
     return () => observer.disconnect();
   }, []);
 
-  const scrollToBooking = () => {
-    const el = document.getElementById("booking");
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <section id="rooms" className="w-full bg-[#F8F6F3] py-24 md:py-32" ref={ref}>
       <div className="max-w-7xl mx-auto px-6 md:px-10">
@@ -120,12 +115,14 @@ export default function Rooms() {
                   ))}
                 </ul>
 
-                <button
-                  onClick={scrollToBooking}
-                  className="w-full py-3 border border-[#C8A96A] text-[#C8A96A] text-xs uppercase tracking-widest rounded-full hover:bg-[#C8A96A] hover:text-black transition-all duration-300 cursor-pointer whitespace-nowrap font-medium"
+                <a
+                  href="https://app.abremponghostel.com/book"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full py-3 border border-[#C8A96A] text-[#C8A96A] text-xs uppercase tracking-widest rounded-full hover:bg-[#C8A96A] hover:text-black transition-all duration-300 cursor-pointer whitespace-nowrap font-medium text-center"
                 >
                   Check Availability
-                </button>
+                </a>
               </div>
             </div>
           ))}

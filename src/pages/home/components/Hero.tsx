@@ -102,12 +102,14 @@ export default function Hero() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button
-              onClick={() => scrollTo("booking")}
+            <a
+              href="https://app.abremponghostel.com/book"
+              target="_blank"
+              rel="noopener noreferrer"
               className="px-8 py-4 bg-[#C8A96A] text-black text-sm uppercase tracking-widest font-semibold rounded-full hover:bg-[#b8955a] transition-all duration-300 hover:scale-105 cursor-pointer whitespace-nowrap"
             >
               Book a Room
-            </button>
+            </a>
             <button
               onClick={() => scrollTo("rooms")}
               className="px-8 py-4 border border-white/60 text-white text-sm uppercase tracking-widest rounded-full hover:border-[#C8A96A] hover:text-[#C8A96A] transition-all duration-300 cursor-pointer whitespace-nowrap"
