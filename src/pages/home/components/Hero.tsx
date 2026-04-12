@@ -53,16 +53,22 @@ export default function Hero() {
 
     // Ensure video attributes are set programmatically (belt-and-suspenders)
     video.muted = true;
+    video.defaultMuted = true;
     video.playsInline = true;
     video.loop = true;
+    video.volume = 0;
     video.setAttribute("playsinline", "");
     video.setAttribute("webkit-playsinline", "");
     video.setAttribute("x5-playsinline", "");
     video.setAttribute("x5-video-player-type", "h5");
     video.setAttribute("x5-video-player-fullscreen", "true");
+    video.setAttribute("muted", "");
 
     const forcePlay = () => {
       if (video.paused) {
+        // Re-assert muted state before every play attempt
+        video.muted = true;
+        video.volume = 0;
         const playPromise = video.play();
         if (playPromise !== undefined) {
           playPromise.catch(() => {
@@ -72,10 +78,12 @@ export default function Hero() {
       }
     };
 
-    // Attempt play immediately
+    // Force iOS to start buffering, then play
+    video.load();
     forcePlay();
 
-    // Retry on canplay / loadeddata events
+    // Retry on media loading events (loadedmetadata fires earliest on iOS)
+    video.addEventListener("loadedmetadata", forcePlay);
     video.addEventListener("canplay", forcePlay);
     video.addEventListener("loadeddata", forcePlay);
 
@@ -104,10 +112,11 @@ export default function Hero() {
       if (video.paused) forcePlay();
     }, 1000);
 
-    // Stop retrying after 10s to save battery
-    const timeout = setTimeout(() => clearInterval(interval), 10000);
+    // Extend retry to 30s for very slow connections
+    const timeout = setTimeout(() => clearInterval(interval), 30000);
 
     return () => {
+      video.removeEventListener("loadedmetadata", forcePlay);
       video.removeEventListener("canplay", forcePlay);
       video.removeEventListener("loadeddata", forcePlay);
       document.removeEventListener("visibilitychange", handleVisibility);
@@ -139,17 +148,18 @@ export default function Hero() {
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1.5s] ease-[cubic-bezier(0.32,0.72,0,1)] ${
             videoLoaded ? "opacity-100" : "opacity-0"
           }`}
-          src="/herovideo.mp4"
+          src="/herovideo.mp4#t=0.001"
           autoPlay
           muted
+          defaultMuted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
           disablePictureInPicture
           controlsList="nodownload nofullscreen noremoteplayback"
-          onCanPlay={() => setVideoLoaded(true)}
+          onLoadedData={() => setVideoLoaded(true)}
+          poster={FALLBACK_IMAGE}
           style={{
-            // Kill any browser-default play button overlay
             WebkitAppearance: "none",
             pointerEvents: "none",
           }}
