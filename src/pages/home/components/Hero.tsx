@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   motion,
   useScroll,
@@ -32,10 +32,17 @@ const fadeUp = {
   },
 };
 
+// Detect mobile for serving the right video file
+const isMobile = () =>
+  typeof window !== "undefined" &&
+  (window.innerWidth <= 768 ||
+    /iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+
 export default function Hero() {
   const [videoLoaded, setVideoLoaded] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -45,88 +52,107 @@ export default function Hero() {
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -80]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
-  // Force autoplay on mobile — iOS Safari blocks autoplay in some conditions.
-  // This aggressively retries .play() until it succeeds.
-  useEffect(() => {
+  const forcePlay = useCallback(() => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video || !video.paused) return;
+    video.muted = true;
+    const p = video.play();
+    if (p) p.catch(() => {});
+  }, []);
 
-    // Ensure video attributes are set programmatically (belt-and-suspenders)
+  // Create the video element via DOM to bypass React's muted attribute bug.
+  // React doesn't set the `muted` HTML attribute on <video>, only the JS property.
+  // iOS Safari checks the HTML attribute when deciding autoplay eligibility.
+  useEffect(() => {
+    const container = videoContainerRef.current;
+    if (!container || videoRef.current) return;
+
+    const video = document.createElement("video");
+    video.className =
+      "absolute inset-0 w-full h-full object-cover";
+    video.style.cssText =
+      "-webkit-appearance:none;pointer-events:none;opacity:0;transition:opacity 1.5s cubic-bezier(0.32,0.72,0,1);";
+
+    // Set ALL attributes as HTML attributes (not just JS properties)
+    video.setAttribute("autoplay", "");
+    video.setAttribute("muted", "");
+    video.setAttribute("loop", "");
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+    video.setAttribute("x5-playsinline", "");
+    video.setAttribute("preload", "auto");
+    video.setAttribute("disablepictureinpicture", "");
+    video.setAttribute("controlslist", "nodownload nofullscreen noremoteplayback");
+    video.setAttribute("poster", FALLBACK_IMAGE);
+
+    // Also set JS properties
     video.muted = true;
     video.defaultMuted = true;
     video.playsInline = true;
     video.loop = true;
+    video.autoplay = true;
     video.volume = 0;
-    video.setAttribute("playsinline", "");
-    video.setAttribute("webkit-playsinline", "");
-    video.setAttribute("x5-playsinline", "");
-    video.setAttribute("x5-video-player-type", "h5");
-    video.setAttribute("x5-video-player-fullscreen", "true");
-    video.setAttribute("muted", "");
 
-    const forcePlay = () => {
-      if (video.paused) {
-        // Re-assert muted state before every play attempt
-        video.muted = true;
-        video.volume = 0;
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            // Autoplay blocked — will retry on next trigger
-          });
-        }
-      }
-    };
+    // Use the lighter mobile version on mobile devices
+    const src = isMobile() ? "/herovideo-mobile.mp4#t=0.001" : "/herovideo.mp4#t=0.001";
+    video.src = src;
 
-    // Force iOS to start buffering, then play
+    video.addEventListener("loadeddata", () => {
+      video.style.opacity = "1";
+      setVideoLoaded(true);
+    });
+
+    container.appendChild(video);
+    videoRef.current = video;
+
+    // Force load and play
     video.load();
-    forcePlay();
+    const p = video.play();
+    if (p) p.catch(() => {});
 
-    // Retry on media loading events (loadedmetadata fires earliest on iOS)
-    video.addEventListener("loadedmetadata", forcePlay);
-    video.addEventListener("canplay", forcePlay);
-    video.addEventListener("loadeddata", forcePlay);
-
-    // Retry when video becomes visible again (e.g. tab switch, scroll back)
-    const handleVisibility = () => {
-      if (!document.hidden) forcePlay();
+    return () => {
+      video.pause();
+      video.removeAttribute("src");
+      video.load();
+      container.removeChild(video);
+      videoRef.current = null;
     };
-    document.addEventListener("visibilitychange", handleVisibility);
+  }, []);
 
-    // Retry on any user interaction (catches iOS low-power mode blocks)
+  // Retry logic for stubborn iOS cases (low-power mode, slow cellular, etc.)
+  useEffect(() => {
     const handleInteraction = () => {
       forcePlay();
-      // Once playing after interaction, remove these listeners
-      if (!video.paused) {
+      const video = videoRef.current;
+      if (video && !video.paused) {
         document.removeEventListener("touchstart", handleInteraction);
         document.removeEventListener("click", handleInteraction);
         document.removeEventListener("scroll", handleInteraction);
       }
     };
+
+    const handleVisibility = () => {
+      if (!document.hidden) forcePlay();
+    };
+
     document.addEventListener("touchstart", handleInteraction, { passive: true });
     document.addEventListener("click", handleInteraction, { passive: true });
     document.addEventListener("scroll", handleInteraction, { passive: true, once: true });
+    document.addEventListener("visibilitychange", handleVisibility);
 
-    // Periodic retry — catches edge cases where autoplay fails silently
-    const interval = setInterval(() => {
-      if (video.paused) forcePlay();
-    }, 1000);
-
-    // Extend retry to 30s for very slow connections
+    // Periodic retry every 2s for 30s
+    const interval = setInterval(forcePlay, 2000);
     const timeout = setTimeout(() => clearInterval(interval), 30000);
 
     return () => {
-      video.removeEventListener("loadedmetadata", forcePlay);
-      video.removeEventListener("canplay", forcePlay);
-      video.removeEventListener("loadeddata", forcePlay);
-      document.removeEventListener("visibilitychange", handleVisibility);
       document.removeEventListener("touchstart", handleInteraction);
       document.removeEventListener("click", handleInteraction);
       document.removeEventListener("scroll", handleInteraction);
+      document.removeEventListener("visibilitychange", handleVisibility);
       clearInterval(interval);
       clearTimeout(timeout);
     };
-  }, []);
+  }, [forcePlay]);
 
   return (
     <section
@@ -143,27 +169,8 @@ export default function Hero() {
             className="absolute inset-0 w-full h-full object-cover object-top"
           />
         )}
-        <video
-          ref={videoRef}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1.5s] ease-[cubic-bezier(0.32,0.72,0,1)] ${
-            videoLoaded ? "opacity-100" : "opacity-0"
-          }`}
-          src="/herovideo.mp4#t=0.001"
-          autoPlay
-          muted
-          defaultMuted
-          loop
-          playsInline
-          preload="metadata"
-          disablePictureInPicture
-          controlsList="nodownload nofullscreen noremoteplayback"
-          onLoadedData={() => setVideoLoaded(true)}
-          poster={FALLBACK_IMAGE}
-          style={{
-            WebkitAppearance: "none",
-            pointerEvents: "none",
-          }}
-        />
+        {/* Video is injected here via DOM to bypass React's muted attribute bug */}
+        <div ref={videoContainerRef} className="absolute inset-0 w-full h-full" />
 
         {/* Cinematic gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70" />
