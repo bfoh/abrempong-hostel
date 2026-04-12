@@ -1,153 +1,238 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useInView,
+} from "framer-motion";
 
-const testimonials = [
+interface Testimonial {
+  id: number;
+  name: string;
+  role: string;
+  avatar: string;
+  quote: string;
+  rating: number;
+}
+
+const testimonials: Testimonial[] = [
   {
     id: 1,
     name: "Kwame Asante",
     role: "University of Ghana Student",
-    avatar: "https://readdy.ai/api/search-image?query=young%20Ghanaian%20male%20university%20student%20smiling%2C%20professional%20headshot%2C%20clean%20background%2C%20confident%20expression&width=100&height=100&seq=ava001&orientation=squarish",
-    quote: "Living at Abrempong has been an absolute game-changer for my studies. The WiFi is fast, the environment is clean, and the security gives my parents peace of mind. Best decision I made!",
+    avatar:
+      "https://readdy.ai/api/search-image?query=young%20Ghanaian%20male%20university%20student%20smiling%2C%20professional%20headshot%2C%20clean%20background%2C%20confident%20expression&width=100&height=100&seq=ava001&orientation=squarish",
+    quote:
+      "Living at Abrempong completely transformed how I study. The WiFi is fast, the environment is clean, and the security gives my parents peace of mind. Best decision I made.",
     rating: 5,
   },
   {
     id: 2,
     name: "Abena Mensah",
     role: "GIMPA Postgraduate Student",
-    avatar: "https://readdy.ai/api/search-image?query=young%20Ghanaian%20female%20university%20student%20smiling%2C%20professional%20headshot%2C%20clean%20background%2C%20warm%20expression&width=100&height=100&seq=ava002&orientation=squarish",
-    quote: "The rooms are spotless and the management is very responsive. I love how close it is to everything in Madina. The price is very fair for the quality you get. Highly recommend!",
+    avatar:
+      "https://readdy.ai/api/search-image?query=young%20Ghanaian%20female%20university%20student%20smiling%2C%20professional%20headshot%2C%20clean%20background%2C%20warm%20expression&width=100&height=100&seq=ava002&orientation=squarish",
+    quote:
+      "The rooms are spotless and the management is very responsive. I love how close it is to everything in Madina. The price is very fair for the quality you get.",
     rating: 5,
   },
   {
     id: 3,
     name: "Emmanuel Boateng",
     role: "Young Professional, Accra",
-    avatar: "https://readdy.ai/api/search-image?query=young%20Ghanaian%20male%20professional%20smiling%2C%20headshot%20portrait%2C%20clean%20background%2C%20smart%20casual%20attire&width=100&height=100&seq=ava003&orientation=squarish",
-    quote: "I stayed here for 3 months while on a work assignment in Accra. The comfort level is way above what I expected for the price. Felt like home. Will definitely be back!",
+    avatar:
+      "https://readdy.ai/api/search-image?query=young%20Ghanaian%20male%20professional%20smiling%2C%20headshot%20portrait%2C%20clean%20background%2C%20smart%20casual%20attire&width=100&height=100&seq=ava003&orientation=squarish",
+    quote:
+      "I stayed here for 3 months while on a work assignment in Accra. The comfort level is way above what I expected for the price. Felt like home. Will definitely be back.",
     rating: 5,
   },
   {
     id: 4,
     name: "Ama Owusu",
     role: "Accra Technical University",
-    avatar: "https://readdy.ai/api/search-image?query=young%20Ghanaian%20female%20student%20smiling%2C%20casual%20portrait%2C%20clean%20background%2C%20friendly%20expression&width=100&height=100&seq=ava004&orientation=squarish",
-    quote: "The location is perfect — I can get to campus in 15 minutes. The rooms are always clean and the water supply is consistent. I&apos;ve recommended Abrempong to all my friends!",
+    avatar:
+      "https://readdy.ai/api/search-image?query=young%20Ghanaian%20female%20student%20smiling%2C%20casual%20portrait%2C%20clean%20background%2C%20friendly%20expression&width=100&height=100&seq=ava004&orientation=squarish",
+    quote:
+      "The location is perfect — I can get to campus in 15 minutes. The rooms are always clean and the water supply is consistent. I've recommended Abrempong to all my friends.",
     rating: 5,
   },
 ];
 
+const slideVariants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 300 : -300,
+    opacity: 0,
+    scale: 0.95,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    scale: 1,
+  },
+  exit: (direction: number) => ({
+    x: direction > 0 ? -300 : 300,
+    opacity: 0,
+    scale: 0.95,
+  }),
+};
+
 export default function Testimonials() {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
+
   const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
-      { threshold: 0.2 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
+  const startAutoRotate = useCallback(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => {
+      setDirection(1);
       setCurrent((prev) => (prev + 1) % testimonials.length);
     }, 5000);
-    return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    startAutoRotate();
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [startAutoRotate]);
+
+  const goTo = (index: number) => {
+    setDirection(index > current ? 1 : -1);
+    setCurrent(index);
+    startAutoRotate();
+  };
+
+  const goPrev = () => {
+    setDirection(-1);
+    setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+    startAutoRotate();
+  };
+
+  const goNext = () => {
+    setDirection(1);
+    setCurrent((prev) => (prev + 1) % testimonials.length);
+    startAutoRotate();
+  };
+
+  const t = testimonials[current];
+
   return (
-    <section id="testimonials" className="w-full bg-[#F8F6F3] py-24 md:py-32" ref={ref}>
+    <section
+      id="testimonials"
+      ref={sectionRef}
+      className="w-full bg-dark-750 py-24 md:py-32"
+    >
       <div className="max-w-7xl mx-auto px-6 md:px-10">
         {/* Header */}
-        <div
-          className={`text-center mb-16 transition-all duration-1000 ${
-            visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          }`}
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 40 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <p className="text-[#C8A96A] text-xs uppercase tracking-[0.3em] mb-4">Testimonials</p>
-          <div className="w-16 h-0.5 bg-[#C8A96A] mx-auto mb-6"></div>
-          <h2
-            className="text-[#0F0F0F] text-3xl md:text-5xl font-bold"
-            style={{ fontFamily: "'Playfair Display', serif" }}
-          >
+          <span className="inline-block rounded-full px-4 py-1.5 text-[10px] uppercase tracking-[0.2em] font-medium font-body text-gold ring-1 ring-gold/20 mb-6">
+            Testimonials
+          </span>
+          <h2 className="text-white text-3xl md:text-5xl font-bold font-display tracking-tight">
             What Residents Say
           </h2>
-        </div>
+        </motion.div>
 
         {/* Carousel */}
-        <div
-          className={`max-w-3xl mx-auto transition-all duration-1000 ${
-            visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
+        <motion.div
+          className="max-w-3xl mx-auto"
+          initial={{ opacity: 0, y: 50 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
         >
-          <div className="bg-white rounded-3xl p-8 md:p-12 relative overflow-hidden">
-            {/* Gold quote mark */}
-            <span
-              className="absolute top-6 left-8 text-[#C8A96A] text-8xl leading-none opacity-20 select-none"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
+          <div className="rounded-[2rem] bg-white/[0.03] p-1.5 ring-1 ring-white/[0.06]"><div className="relative overflow-hidden rounded-[calc(2rem-0.375rem)] bg-dark-700 p-8 md:p-12 min-h-[300px] sm:min-h-[340px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)]">
+            {/* Decorative gold quote mark */}
+            <span className="absolute top-4 left-8 text-gold/15 text-[120px] leading-none select-none pointer-events-none font-display">
               &ldquo;
             </span>
 
-            {/* Rating */}
-            <div className="flex items-center gap-1 mb-6">
-              {Array.from({ length: testimonials[current].rating }).map((_, i) => (
-                <i key={i} className="ri-star-fill text-[#C8A96A] text-sm"></i>
-              ))}
-            </div>
-
-            {/* Quote */}
-            <p
-              className="text-[#0F0F0F] text-lg md:text-xl leading-relaxed mb-8 relative z-10 italic"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
-              &ldquo;{testimonials[current].quote}&rdquo;
-            </p>
-
-            {/* User */}
-            <div className="flex items-center gap-4">
-              <img
-                src={testimonials[current].avatar}
-                alt={testimonials[current].name}
-                className="w-14 h-14 rounded-full object-cover object-top"
-              />
-              <div>
-                <p className="text-[#0F0F0F] font-semibold text-sm">{testimonials[current].name}</p>
-                <p className="text-gray-400 text-xs mt-0.5">{testimonials[current].role}</p>
-              </div>
-            </div>
-
-            {/* Navigation */}
-            <div className="flex items-center gap-3 mt-8 justify-end">
-              <button
-                onClick={() => setCurrent((current - 1 + testimonials.length) % testimonials.length)}
-                className="w-10 h-10 flex items-center justify-center rounded-full border border-[#0F0F0F]/20 hover:border-[#C8A96A] text-[#0F0F0F] hover:text-[#C8A96A] transition-all duration-300 cursor-pointer"
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                key={t.id}
+                custom={direction}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="relative z-10"
               >
-                <i className="ri-arrow-left-line"></i>
+                {/* Stars */}
+                <div className="flex items-center gap-1 mb-6">
+                  {Array.from({ length: t.rating }).map((_, i) => (
+                    <i
+                      key={i}
+                      className="ri-star-fill text-gold text-sm"
+                    />
+                  ))}
+                </div>
+
+                {/* Quote */}
+                <p className="text-white/90 text-base sm:text-lg md:text-xl leading-relaxed mb-8 italic font-display">
+                  &ldquo;{t.quote}&rdquo;
+                </p>
+
+                {/* Author */}
+                <div className="flex items-center gap-4">
+                  <img
+                    src={t.avatar}
+                    alt={t.name}
+                    className="w-14 h-14 rounded-full object-cover object-top ring-2 ring-gold/30"
+                  />
+                  <div>
+                    <p className="text-white font-semibold text-sm font-body">
+                      {t.name}
+                    </p>
+                    <p className="text-white/40 text-xs mt-0.5 font-body">
+                      {t.role}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Arrow Navigation */}
+            <div className="flex items-center gap-3 mt-8 justify-end relative z-10">
+              <button
+                onClick={goPrev}
+                className="w-11 h-11 flex items-center justify-center rounded-full border border-white/15 hover:border-gold text-white/60 hover:text-gold transition-all duration-300 cursor-pointer"
+                aria-label="Previous testimonial"
+              >
+                <i className="ri-arrow-left-line" />
               </button>
               <button
-                onClick={() => setCurrent((current + 1) % testimonials.length)}
-                className="w-10 h-10 flex items-center justify-center rounded-full bg-[#C8A96A] text-black hover:bg-[#b8955a] transition-all duration-300 cursor-pointer"
+                onClick={goNext}
+                className="w-11 h-11 flex items-center justify-center rounded-full bg-gold text-black hover:bg-gold-dark transition-all duration-300 cursor-pointer"
+                aria-label="Next testimonial"
               >
-                <i className="ri-arrow-right-line"></i>
+                <i className="ri-arrow-right-line" />
               </button>
             </div>
-          </div>
+          </div></div>
 
-          {/* Dots */}
+          {/* Dot Indicators */}
           <div className="flex items-center justify-center gap-2 mt-6">
             {testimonials.map((_, i) => (
               <button
                 key={i}
-                onClick={() => setCurrent(i)}
+                onClick={() => goTo(i)}
                 className={`rounded-full transition-all duration-300 cursor-pointer ${
-                  i === current ? "w-6 h-2 bg-[#C8A96A]" : "w-2 h-2 bg-[#C8A96A]/30"
+                  i === current
+                    ? "w-6 h-2 bg-gold"
+                    : "w-2 h-2 bg-gold/30 hover:bg-gold/50"
                 }`}
+                aria-label={`Go to testimonial ${i + 1}`}
               />
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
