@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   motion,
   useScroll,
@@ -35,6 +35,7 @@ const fadeUp = {
 export default function Hero() {
   const [videoLoaded, setVideoLoaded] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -43,6 +44,80 @@ export default function Hero() {
 
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -80]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+
+  // Force autoplay on mobile — iOS Safari blocks autoplay in some conditions.
+  // This aggressively retries .play() until it succeeds.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Ensure video attributes are set programmatically (belt-and-suspenders)
+    video.muted = true;
+    video.playsInline = true;
+    video.loop = true;
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+    video.setAttribute("x5-playsinline", "");
+    video.setAttribute("x5-video-player-type", "h5");
+    video.setAttribute("x5-video-player-fullscreen", "true");
+
+    const forcePlay = () => {
+      if (video.paused) {
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // Autoplay blocked — will retry on next trigger
+          });
+        }
+      }
+    };
+
+    // Attempt play immediately
+    forcePlay();
+
+    // Retry on canplay / loadeddata events
+    video.addEventListener("canplay", forcePlay);
+    video.addEventListener("loadeddata", forcePlay);
+
+    // Retry when video becomes visible again (e.g. tab switch, scroll back)
+    const handleVisibility = () => {
+      if (!document.hidden) forcePlay();
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    // Retry on any user interaction (catches iOS low-power mode blocks)
+    const handleInteraction = () => {
+      forcePlay();
+      // Once playing after interaction, remove these listeners
+      if (!video.paused) {
+        document.removeEventListener("touchstart", handleInteraction);
+        document.removeEventListener("click", handleInteraction);
+        document.removeEventListener("scroll", handleInteraction);
+      }
+    };
+    document.addEventListener("touchstart", handleInteraction, { passive: true });
+    document.addEventListener("click", handleInteraction, { passive: true });
+    document.addEventListener("scroll", handleInteraction, { passive: true, once: true });
+
+    // Periodic retry — catches edge cases where autoplay fails silently
+    const interval = setInterval(() => {
+      if (video.paused) forcePlay();
+    }, 1000);
+
+    // Stop retrying after 10s to save battery
+    const timeout = setTimeout(() => clearInterval(interval), 10000);
+
+    return () => {
+      video.removeEventListener("canplay", forcePlay);
+      video.removeEventListener("loadeddata", forcePlay);
+      document.removeEventListener("visibilitychange", handleVisibility);
+      document.removeEventListener("touchstart", handleInteraction);
+      document.removeEventListener("click", handleInteraction);
+      document.removeEventListener("scroll", handleInteraction);
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, []);
 
   return (
     <section
@@ -60,6 +135,7 @@ export default function Hero() {
           />
         )}
         <video
+          ref={videoRef}
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1.5s] ease-[cubic-bezier(0.32,0.72,0,1)] ${
             videoLoaded ? "opacity-100" : "opacity-0"
           }`}
@@ -68,7 +144,15 @@ export default function Hero() {
           muted
           loop
           playsInline
+          preload="auto"
+          disablePictureInPicture
+          controlsList="nodownload nofullscreen noremoteplayback"
           onCanPlay={() => setVideoLoaded(true)}
+          style={{
+            // Kill any browser-default play button overlay
+            WebkitAppearance: "none",
+            pointerEvents: "none",
+          }}
         />
 
         {/* Cinematic gradient overlay */}
