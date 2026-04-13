@@ -44,7 +44,7 @@ export default function Booking() {
     <section
       id="booking"
       ref={sectionRef}
-      className="w-full bg-dark-850 py-24 md:py-32 relative overflow-hidden"
+      className="w-full bg-dark-850 py-16 md:py-24 lg:py-32 relative overflow-hidden"
     >
       {/* Subtle radial glow */}
       <div className="absolute inset-0 pointer-events-none">

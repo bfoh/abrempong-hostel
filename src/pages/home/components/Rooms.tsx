@@ -215,7 +215,7 @@ export default function Rooms() {
   return (
     <section
       id="rooms"
-      className="w-full bg-dark-900 py-24 md:py-32 overflow-hidden"
+      className="w-full bg-dark-900 py-16 md:py-24 lg:py-32 overflow-hidden"
       ref={sectionRef}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-10">

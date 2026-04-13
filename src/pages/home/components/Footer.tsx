@@ -24,6 +24,7 @@ export default function Footer() {
   const quickLinks = [
     { label: "Rooms & Pricing", id: "rooms" },
     { label: "Amenities", id: "amenities" },
+    { label: "Restaurant", id: "restaurant" },
     { label: "Gallery", id: "gallery" },
     { label: "Location", id: "location" },
     { label: "Book a Room", id: "booking" },
@@ -75,7 +76,7 @@ export default function Footer() {
 
   return (
     <footer ref={footerRef} className="w-full bg-dark-950 text-white pt-24 pb-10">
-      <div className="max-w-7xl mx-auto px-6 md:px-10">
+      <div className="max-w-6xl mx-auto px-6 md:px-8">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -88,7 +89,7 @@ export default function Footer() {
               <img
                 src="https://storage.readdy-site.link/project_files/af5bd58b-f754-41f5-9d59-5c72abe3f6ed/caf55604-a6d6-4a2e-ad55-38ff7a29ed03_logo.png?v=b35f323c58137445fa5e370d5ca05b42"
                 alt="Abrempong Hostel Logo"
-                className="h-12 w-auto object-contain"
+                className="h-10 md:h-12 w-auto object-contain"
               />
               <span className="text-gold font-display font-semibold tracking-[0.15em] text-sm uppercase">
                 Abrempong

@@ -19,7 +19,7 @@ export default function Location() {
     <section
       id="location"
       ref={sectionRef}
-      className="w-full bg-dark-900 py-24 md:py-32"
+      className="w-full bg-dark-900 py-16 md:py-24 lg:py-32"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">

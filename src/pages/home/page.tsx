@@ -7,6 +7,7 @@ import Safety from "./components/Safety";
 import Amenities from "./components/Amenities";
 import Gallery from "./components/Gallery";
 import StudentLife from "./components/StudentLife";
+import Restaurant from "./components/Restaurant";
 import Testimonials from "./components/Testimonials";
 import Location from "./components/Location";
 import FAQ from "./components/FAQ";
@@ -26,6 +27,7 @@ export default function Home() {
       <Amenities />
       <Gallery />
       <StudentLife />
+      <Restaurant />
       <Testimonials />
       <Location />
       <FAQ />

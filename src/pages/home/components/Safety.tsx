@@ -63,7 +63,7 @@ export default function Safety() {
   return (
     <section
       id="safety"
-      className="w-full bg-dark-800 py-24 md:py-32 overflow-hidden"
+      className="w-full bg-dark-800 py-16 md:py-24 lg:py-32 overflow-hidden"
       ref={sectionRef}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-10">
@@ -201,12 +201,12 @@ export default function Safety() {
           <p className="text-white/40 text-sm font-body mb-6">
             Feel safe. Focus on what matters.
           </p>
-          <div className="flex items-center justify-center gap-3">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <a
               href="https://app.abremponghostel.com/book"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-8 py-3.5 bg-gold text-black text-xs uppercase tracking-widest font-semibold rounded-full hover:bg-gold-dark active:scale-[0.97] transition-all duration-300 font-body"
+              className="w-full sm:w-auto px-8 py-3.5 bg-gold text-black text-xs uppercase tracking-widest font-semibold rounded-full hover:bg-gold-dark active:scale-[0.97] transition-all duration-300 font-body text-center"
             >
               Book a Secure Room
             </a>
@@ -214,7 +214,7 @@ export default function Safety() {
               href="https://wa.me/233256112666"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-8 py-3.5 border border-white/20 text-white/70 text-xs uppercase tracking-widest rounded-full hover:border-gold hover:text-gold active:scale-[0.97] transition-all duration-300 font-body"
+              className="w-full sm:w-auto px-8 py-3.5 border border-white/20 text-white/70 text-xs uppercase tracking-widest rounded-full hover:border-gold hover:text-gold active:scale-[0.97] transition-all duration-300 font-body text-center"
             >
               Ask About Security
             </a>

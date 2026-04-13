@@ -132,7 +132,7 @@ export default function FAQ() {
     <section
       id="faq"
       ref={sectionRef}
-      className="w-full bg-dark-750 py-24 md:py-32"
+      className="w-full bg-dark-750 py-16 md:py-24 lg:py-32"
     >
       <div className="max-w-3xl mx-auto px-6 md:px-10">
         {/* Header */}

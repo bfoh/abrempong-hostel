@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const NAV_LINKS = ["rooms", "amenities", "gallery", "booking"] as const;
+const NAV_LINKS = ["rooms", "amenities", "restaurant", "gallery", "booking"] as const;
 
 const LOGO_URL =
   "https://storage.readdy-site.link/project_files/af5bd58b-f754-41f5-9d59-5c72abe3f6ed/caf55604-a6d6-4a2e-ad55-38ff7a29ed03_logo.png?v=b35f323c58137445fa5e370d5ca05b42";
@@ -56,13 +56,13 @@ export default function Navbar() {
               : "bg-white/[0.04] backdrop-blur-sm ring-1 ring-white/[0.08]"
           } rounded-full`}
         >
-          <div className="flex items-center justify-between h-16 md:h-[4.25rem] px-4 md:px-8">
+          <div className="flex items-center justify-between h-14 md:h-[4.25rem] px-5 md:px-8">
             {/* Logo */}
-            <a href="/" className="flex items-center gap-3 cursor-pointer flex-shrink-0">
+            <a href="/" className="flex items-center gap-2 cursor-pointer flex-shrink-0">
               <img
                 src={LOGO_URL}
                 alt="Abrempong Hostel Logo"
-                className="h-10 w-auto object-contain"
+                className="h-8 md:h-10 w-auto object-contain"
               />
             </a>
 

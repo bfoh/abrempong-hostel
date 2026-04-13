@@ -85,7 +85,7 @@ export default function StudentLife() {
   return (
     <section
       id="student-life"
-      className="w-full bg-dark-800 py-24 md:py-32 overflow-hidden"
+      className="w-full bg-dark-800 py-16 md:py-24 lg:py-32 overflow-hidden"
       ref={sectionRef}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-10">

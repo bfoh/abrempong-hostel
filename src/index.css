@@ -55,6 +55,19 @@
   }
 }
 
+/* Ensure minimum touch target on mobile */
+@media (pointer: coarse) {
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  /* Exclude inline text links and icon-only elements from min-width */
+  p a, span a, li a:not([class*="flex"]) {
+    min-width: unset;
+    min-height: unset;
+  }
+}
+
 /* Film grain overlay for texture depth */
 .grain-overlay::after {
   content: '';

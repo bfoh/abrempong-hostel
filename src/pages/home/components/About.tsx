@@ -35,11 +35,11 @@ export default function About() {
   return (
     <section
       id="about"
-      className="w-full bg-dark-750 py-24 md:py-32 overflow-hidden"
+      className="w-full bg-dark-750 py-16 md:py-24 lg:py-32 overflow-hidden"
       ref={sectionRef}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Left: Image */}
           <motion.div
             className="relative"

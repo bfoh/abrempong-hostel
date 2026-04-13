@@ -122,7 +122,7 @@ export default function Testimonials() {
     <section
       id="testimonials"
       ref={sectionRef}
-      className="w-full bg-dark-750 py-24 md:py-32"
+      className="w-full bg-dark-750 py-16 md:py-24 lg:py-32"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-10">
         {/* Header */}
@@ -147,7 +147,7 @@ export default function Testimonials() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
         >
-          <div className="rounded-[2rem] bg-white/[0.03] p-1.5 ring-1 ring-white/[0.06]"><div className="relative overflow-hidden rounded-[calc(2rem-0.375rem)] bg-dark-700 p-8 md:p-12 min-h-[300px] sm:min-h-[340px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)]">
+          <div className="rounded-xl sm:rounded-[2rem] bg-white/[0.03] p-1 sm:p-1.5 ring-1 ring-white/[0.06]"><div className="relative overflow-hidden rounded-[calc(0.75rem-0.25rem)] sm:rounded-[calc(2rem-0.375rem)] bg-dark-700 p-5 sm:p-8 md:p-12 min-h-[280px] sm:min-h-[340px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)]">
             {/* Decorative gold quote mark */}
             <span className="absolute top-4 left-8 text-gold/15 text-[120px] leading-none select-none pointer-events-none font-display">
               &ldquo;
