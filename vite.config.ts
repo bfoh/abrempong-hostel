@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { resolve } from "node:path";
 import AutoImport from "unplugin-auto-import/vite";
+import Sitemap from "vite-plugin-sitemap";
 // import { readdyJsxRuntimeProxyPlugin } from "./vite.jsx-runtime-proxy";
 
 const base = process.env.BASE_PATH || "/";
@@ -19,6 +20,11 @@ export default defineConfig({
   plugins: [
     // ...proxyPlugins,
     react(),
+    Sitemap({
+      hostname: "https://abremponghostel.com",
+      generateRobotsTxt: true,
+      robots: [{ userAgent: "*", allow: "/" }],
+    }),
     AutoImport({
       imports: [
         {
