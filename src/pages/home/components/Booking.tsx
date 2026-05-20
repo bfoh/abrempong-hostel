@@ -35,7 +35,7 @@ export default function Booking() {
   };
 
   const whatsappUrl =
-    "https://wa.me/233256112666?text=Hello!%20I'm%20interested%20in%20booking%20a%20room%20at%20Abrempong%20Hostel%2C%20Madina.%20Please%20provide%20more%20details.";
+    "https://wa.me/233256112666?text=Hello!%20I%20have%20an%20enquiry%20about%20rooms%20at%20Abrempong%20Hostel%2C%20Madina.%20Could%20you%20share%20more%20details%3F";
 
   const inputClasses =
     "w-full h-12 px-5 bg-dark-900 rounded-2xl text-sm text-white placeholder-white/25 ring-1 ring-white/[0.06] focus:ring-gold/60 focus:outline-none transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] font-body";
@@ -60,13 +60,13 @@ export default function Booking() {
           className="text-center mb-12"
         >
           <span className="inline-block rounded-full px-4 py-1.5 text-[10px] uppercase tracking-[0.2em] font-medium font-body text-gold ring-1 ring-gold/20 mb-6">
-            BOOK NOW
+            ENQUIRE
           </span>
           <h2 className="text-white text-3xl md:text-5xl font-bold font-display tracking-tight">
-            Ready to Move In?
+            Have a Question?
           </h2>
           <p className="text-white/50 text-base mt-4 font-body">
-            Secure your space in minutes
+            Send us an enquiry and we&apos;ll respond within 24 hours
           </p>
         </motion.div>
 
@@ -86,31 +86,32 @@ export default function Booking() {
                   <i className="ri-check-double-line text-gold text-4xl" />
                 </div>
                 <h3 className="text-white text-2xl font-bold mb-3 font-display">
-                  Booking Received
+                  Enquiry Received
                 </h3>
                 <p className="text-white/50 text-sm font-body mb-8 max-w-sm mx-auto">
-                  Thank you! We&apos;ll contact you within 24 hours to confirm
-                  your room.
+                  Thank you! We&apos;ll get back to you within 24 hours with
+                  answers to your questions.
                 </p>
                 <button
                   onClick={() => setSubmitted(false)}
                   className="px-8 py-3 border border-gold text-gold text-xs uppercase tracking-widest rounded-full hover:bg-gold hover:text-black transition-all duration-300 cursor-pointer font-body font-semibold"
                 >
-                  Book Another Room
+                  Send Another Enquiry
                 </button>
               </div>
             ) : (
               <form
                 data-readdy-form
-                id="abrempong-booking-form"
+                id="abrempong-enquiry-form"
                 onSubmit={handleSubmit}
                 className="space-y-5"
               >
                 <h3 className="text-white text-xl font-bold font-display mb-2">
-                  Book Online
+                  Make an Enquiry
                 </h3>
                 <p className="text-white/40 text-sm font-body mb-4">
-                  Fill in your details and we&apos;ll confirm within 24 hours.
+                  Fill in your details and we&apos;ll get back to you within 24
+                  hours.
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -155,22 +156,21 @@ export default function Booking() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-white/70 text-xs uppercase tracking-wider mb-2 font-body font-medium">
-                      Move-in Date <span className="text-gold">*</span>
+                      Preferred Move-in Date
                     </label>
                     <input
                       type="date"
                       name="move_in_date"
-                      required
                       className={`${inputClasses} [color-scheme:dark]`}
                     />
                   </div>
                   <div>
                     <label className="block text-white/70 text-xs uppercase tracking-wider mb-2 font-body font-medium">
-                      Room Type <span className="text-gold">*</span>
+                      Room of Interest
                     </label>
                     <select
                       name="room_type"
-                      required
+                      defaultValue=""
                       className={`${inputClasses} cursor-pointer`}
                     >
                       <option value="">Select room type</option>
@@ -186,19 +186,21 @@ export default function Booking() {
                       <option value="4-in-a-Room">
                         4-in-a-Room — GHC 5,500/sem
                       </option>
+                      <option value="Not sure yet">Not sure yet</option>
                     </select>
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-white/70 text-xs uppercase tracking-wider mb-2 font-body font-medium">
-                    Message
+                    Your Enquiry <span className="text-gold">*</span>
                   </label>
                   <textarea
                     name="message"
                     rows={4}
+                    required
                     maxLength={500}
-                    placeholder="Any special requirements or questions..."
+                    placeholder="Ask us anything about rooms, amenities, pricing, or facilities..."
                     onChange={(e) => setCharCount(e.target.value.length)}
                     className="w-full px-5 py-3 bg-dark-900 rounded-2xl text-sm text-white placeholder-white/25 ring-1 ring-white/[0.06] focus:ring-gold/60 focus:outline-none transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] resize-none font-body"
                   />
@@ -218,7 +220,7 @@ export default function Booking() {
                       Sending...
                     </span>
                   ) : (
-                    "Confirm Booking"
+                    "Send Enquiry"
                   )}
                 </button>
               </form>
@@ -247,9 +249,9 @@ export default function Booking() {
                   Prefer to Chat?
                 </h3>
                 <p className="text-white/50 text-base font-body mb-8 leading-relaxed max-w-md">
-                  Send us a message on WhatsApp and we&apos;ll respond within
-                  minutes. Get instant answers about rooms, pricing, and
-                  availability.
+                  Send us a message on WhatsApp for an instant reply. Ask about
+                  rooms, pricing, availability, or anything else you&apos;d like
+                  to know.
                 </p>
 
                 <a
@@ -280,12 +282,12 @@ export default function Booking() {
                 <div className="border-t border-white/10 pt-6">
                   <div className="flex items-center justify-center gap-6 flex-wrap">
                     <div className="flex items-center gap-2 text-white/50 text-sm font-body">
-                      <i className="ri-shield-check-line text-gold" />
-                      <span>Secure booking</span>
+                      <i className="ri-chat-smile-2-line text-gold" />
+                      <span>No commitment</span>
                     </div>
                     <div className="flex items-center gap-2 text-white/50 text-sm font-body">
                       <i className="ri-flashlight-line text-gold" />
-                      <span>Instant confirmation</span>
+                      <span>Quick response</span>
                     </div>
                     <div className="flex items-center gap-2 text-white/50 text-sm font-body">
                       <i className="ri-time-line text-gold" />

@@ -27,7 +27,7 @@ export default function Footer() {
     { label: "Restaurant", id: "restaurant" },
     { label: "Gallery", id: "gallery" },
     { label: "Location", id: "location" },
-    { label: "Book a Room", id: "booking" },
+    { label: "Make an Enquiry", id: "booking" },
   ];
 
   const contactItems = [

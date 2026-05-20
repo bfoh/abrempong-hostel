@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const NAV_LINKS = ["rooms", "amenities", "restaurant", "gallery", "booking"] as const;
+const NAV_LINKS = [
+  { label: "rooms", target: "rooms" },
+  { label: "amenities", target: "amenities" },
+  { label: "restaurant", target: "restaurant" },
+  { label: "gallery", target: "gallery" },
+  { label: "enquire", target: "booking" },
+] as const;
 
 const LOGO_URL =
   "https://storage.readdy-site.link/project_files/af5bd58b-f754-41f5-9d59-5c72abe3f6ed/caf55604-a6d6-4a2e-ad55-38ff7a29ed03_logo.png?v=b35f323c58137445fa5e370d5ca05b42";
@@ -70,14 +76,14 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-7">
               {NAV_LINKS.map((item, i) => (
                 <motion.button
-                  key={item}
+                  key={item.target}
                   initial={{ opacity: 0, y: -8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ ...navTransition, delay: 0.12 * i + 0.4 }}
-                  onClick={() => scrollTo(item)}
+                  onClick={() => scrollTo(item.target)}
                   className="relative text-white/70 hover:text-gold text-[11px] uppercase tracking-[0.18em] font-medium cursor-pointer whitespace-nowrap font-body transition-colors duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"
                 >
-                  {item}
+                  {item.label}
                 </motion.button>
               ))}
             </div>
@@ -154,7 +160,7 @@ export default function Navbar() {
             <div className="flex flex-col items-center gap-8">
               {NAV_LINKS.map((item, i) => (
                 <motion.button
-                  key={item}
+                  key={item.target}
                   initial={{ opacity: 0, y: 32, filter: "blur(8px)" }}
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   exit={{ opacity: 0, y: 16, filter: "blur(4px)" }}
@@ -163,10 +169,10 @@ export default function Navbar() {
                     delay: 0.08 * i + 0.15,
                     ease: [0.32, 0.72, 0, 1],
                   }}
-                  onClick={() => scrollTo(item)}
+                  onClick={() => scrollTo(item.target)}
                   className="text-white/80 hover:text-gold text-xl sm:text-2xl uppercase tracking-[0.15em] sm:tracking-[0.25em] font-light cursor-pointer font-display transition-colors duration-500"
                 >
-                  {item}
+                  {item.label}
                 </motion.button>
               ))}
 
