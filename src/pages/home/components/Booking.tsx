@@ -174,23 +174,17 @@ export default function Booking() {
                       className={`${inputClasses} cursor-pointer`}
                     >
                       <option value="">Select room type</option>
-                      <option value="1-in-a-Room Standard">
-                        1-in-a-Room Standard — GHC 14,500/sem
+                      <option value="1-in-a-Room">
+                        1-in-a-Room — GHC 15,000/sem
                       </option>
-                      <option value="1-in-a-Room Executive">
-                        1-in-a-Room Executive — GHC 17,500/sem
-                      </option>
-                      <option value="2-in-a-Room Standard">
-                        2-in-a-Room Standard — GHC 7,500/sem
-                      </option>
-                      <option value="2-in-a-Room Executive">
-                        2-in-a-Room Executive — GHC 9,000/sem
+                      <option value="2-in-a-Room">
+                        2-in-a-Room — GHC 8,000/sem
                       </option>
                       <option value="3-in-a-Room">
-                        3-in-a-Room — GHC 6,200/sem
+                        3-in-a-Room — GHC 6,500/sem
                       </option>
                       <option value="4-in-a-Room">
-                        4-in-a-Room — GHC 5,200/sem
+                        4-in-a-Room — GHC 5,500/sem
                       </option>
                     </select>
                   </div>

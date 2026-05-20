@@ -566,7 +566,7 @@ export default function Restaurant() {
             </div>
             <div>
               <p className="text-white text-sm font-semibold font-body">
-                MoMo: 0553286846
+                MoMo: 0555256656
               </p>
               <p className="text-white/40 text-xs font-body">
                 Mobile Money Payment
@@ -594,7 +594,7 @@ export default function Restaurant() {
             </span>
           </a>
           <a
-            href="tel:+233553286846"
+            href="tel:+233555256656"
             className="flex items-center gap-2 px-6 py-2.5 ring-1 ring-white/20 text-white/70 text-xs uppercase tracking-[0.15em] rounded-full hover:ring-gold hover:text-gold active:scale-[0.97] transition-all duration-500 cursor-pointer font-body"
           >
             <i className="ri-phone-line text-sm" />
