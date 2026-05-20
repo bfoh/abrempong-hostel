@@ -8,27 +8,37 @@ export default function Booking() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [charCount, setCharCount] = useState(0);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const ENQUIRY_ENDPOINT =
+    "https://app.abremponghostel.com/api/public/abrempong-hostel-666865/enquiry";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
+    setErrorMsg(null);
     const form = e.currentTarget;
-    const data = new URLSearchParams();
     const formData = new FormData(form);
+    const data: Record<string, string> = {};
     formData.forEach((value, key) => {
-      data.append(key, value.toString());
+      data[key] = value.toString();
     });
     try {
-      await fetch("https://readdy.ai/api/form/d77vojb86jhav3jpf05g", {
+      const res = await fetch(ENQUIRY_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: data.toString(),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
       });
-      setSubmitted(true);
-      form.reset();
-      setCharCount(0);
+      if (res.ok) {
+        setSubmitted(true);
+        form.reset();
+        setCharCount(0);
+      } else {
+        const body = await res.json().catch(() => ({}));
+        setErrorMsg(body.error || "Could not send. Please try again or call us.");
+      }
     } catch {
-      // silent fail
+      setErrorMsg("Network error — please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -101,10 +111,10 @@ export default function Booking() {
               </div>
             ) : (
               <form
-                data-readdy-form
                 id="abrempong-enquiry-form"
                 onSubmit={handleSubmit}
                 className="space-y-5"
+                noValidate
               >
                 <h3 className="text-white text-xl font-bold font-display mb-2">
                   Make an Enquiry
@@ -160,7 +170,7 @@ export default function Booking() {
                     </label>
                     <input
                       type="date"
-                      name="move_in_date"
+                      name="preferred_move_in"
                       className={`${inputClasses} [color-scheme:dark]`}
                     />
                   </div>
@@ -169,7 +179,7 @@ export default function Booking() {
                       Room of Interest
                     </label>
                     <select
-                      name="room_type"
+                      name="room_of_interest"
                       defaultValue=""
                       className={`${inputClasses} cursor-pointer`}
                     >
@@ -208,6 +218,22 @@ export default function Booking() {
                     {charCount}/500
                   </p>
                 </div>
+
+                {/* Honeypot — bots fill, humans don't see */}
+                <input
+                  type="text"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="absolute -left-[9999px] h-0 w-0 opacity-0"
+                />
+
+                {errorMsg && (
+                  <p className="text-red-400 text-sm font-body text-center">
+                    {errorMsg}
+                  </p>
+                )}
 
                 <button
                   type="submit"
