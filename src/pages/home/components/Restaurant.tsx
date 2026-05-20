@@ -583,15 +583,25 @@ export default function Restaurant() {
           transition={{ duration: 0.7, delay: 0.6, ease: premiumEase }}
         >
           <a
+            href="https://app.abremponghostel.com/order/abrempong-hostel-666865"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center gap-3 pl-7 pr-2 py-2 bg-gold text-black text-xs uppercase tracking-[0.15em] font-semibold rounded-full shadow-[0_10px_30px_-12px_rgba(199,165,90,0.45)] hover:bg-gold-dark hover:shadow-[0_14px_36px_-10px_rgba(199,165,90,0.6)] active:scale-[0.97] transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] cursor-pointer whitespace-nowrap font-body"
+            aria-label="Order food online from Abrempong's Kitchen"
+          >
+            Order Online
+            <span className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-px group-hover:scale-110 animate-[pulse_2.4s_ease-in-out_infinite] group-hover:animate-none">
+              <i className="ri-shopping-bag-line text-sm" />
+            </span>
+          </a>
+          <a
             href="https://wa.me/233256112666?text=Hi%2C%20I%27d%20like%20to%20order%20from%20Abrempong%27s%20Kitchen"
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center gap-3 pl-7 pr-2 py-2 bg-gold text-black text-xs uppercase tracking-[0.15em] font-semibold rounded-full hover:bg-gold-dark active:scale-[0.97] transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] cursor-pointer whitespace-nowrap font-body"
+            className="group flex items-center gap-2 px-6 py-2.5 ring-1 ring-gold/40 text-gold text-xs uppercase tracking-[0.15em] rounded-full hover:ring-gold hover:bg-gold/[0.08] active:scale-[0.97] transition-all duration-500 cursor-pointer font-body"
           >
+            <i className="ri-whatsapp-line text-sm" />
             Order via WhatsApp
-            <span className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-px group-hover:scale-110">
-              <i className="ri-whatsapp-line text-sm" />
-            </span>
           </a>
           <a
             href="tel:+233555256656"
